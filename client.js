@@ -222,6 +222,8 @@ window.__ModuleLoader__.load({
       'html.' + NATIVE_CLASS + ' [class*="xeixwq_tablePane"],',
       'html.' + NATIVE_CLASS + ' [class*="xeixwq_table"],',
       'html.' + NATIVE_CLASS + ' [class*="Wd4N7W_root"]{background:rgba(255,255,255,.26) !important}',
+      'html.' + NATIVE_CLASS + ' [class*="_pane_"],',
+      'html.' + NATIVE_CLASS + ' [class*="_tabHost_"]{background:transparent !important}',
       'html.' + NATIVE_CLASS + ' [data-rightbar-col]{',
       '  background:rgba(255,255,255,.40) !important;',
       '  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;',
