@@ -1,7 +1,7 @@
 {
   "id": "dsh-frosted-glass-theme",
   "name": "磨砂玻璃 / Frosted Glass",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "package": "dsh-frosted-glass-theme",
   "description": "磨砂玻璃主题：半透明毛玻璃面板 + 柔和彩色玻璃底图。",
   "entry": "client.js"
