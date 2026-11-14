@@ -1,0 +1,61 @@
+{
+  "name": "dsh-frosted-glass-theme",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Frosted glass theme for DeepSeek Harness: translucent blurred glass panels floating over a soft colorful backdrop. · 磨砂玻璃主题：半透明毛玻璃面板 + 柔和彩色玻璃底图，浅色/深色两套。",
+  "license": "MIT",
+  "author": "dsh-frosted-glass-theme contributors",
+  "homepage": "https://github.com/YOUR-GITHUB-OWNER/dsh-frosted-glass-theme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR-GITHUB-OWNER/dsh-frosted-glass-theme.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR-GITHUB-OWNER/dsh-frosted-glass-theme/issues"
+  },
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "theme",
+    "skin",
+    "glass",
+    "glassmorphism",
+    "frosted-glass",
+    "translucent",
+    "blur"
+  ],
+  "engines": {
+    "node": ">=20",
+    "dsh": ">=0.2.0 || >=0.2.2-0"
+  },
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./skin.json": "./skin.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "lib/*.mjs",
+    "client.js",
+    "cordis.patch.yml",
+    "skin.json",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true
+    }
+  }
+}

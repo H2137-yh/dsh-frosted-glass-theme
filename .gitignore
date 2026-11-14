@@ -1,0 +1,12 @@
+# .gitignore —— 磨砂玻璃主题
+logs/
+dist/
+node_modules/
+_profile-backup/
+_dsh-patch-backup/
+test/
+*.log
+*.tgz
+*.dsh-frosted-glass-backup
+.DS_Store
+Thumbs.db
