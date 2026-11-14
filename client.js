@@ -1,4 +1,4 @@
-﻿/**
+/**
  * dsh-frosted-glass-theme —— 浏览器半侧（手写 __ModuleLoader__ bundle，零构建）。
  *
  * 把 DeepSeek Harness 的 Web UI 变成「磨砂玻璃」主题：
@@ -99,6 +99,26 @@ window.__ModuleLoader__.load({
       '  --dsw-elevation-prominent:0 18px 46px rgba(37,55,84,.16),0 1px 2px rgba(37,55,84,.08);',
       '  --dsw-elevation-soft:0 6px 22px rgba(37,55,84,.08);',
       '}',
+      '',
+      '/* ---- 可调参数：玻璃白度 / 模糊强度（右上角小面板控制）---------------- */',
+      'html.' + ROOT_CLASS + '{--fg-rgb:255 255 255;--fg-a:.16;--fg-blur:22px}',
+      'html.' + ROOT_CLASS + '.' + DARK_CLASS + '{--fg-rgb:30 35 46;--fg-a:.22}',
+      'html.' + NATIVE_CLASS + '{--fg-blur:0px}',
+      'html.' + ROOT_CLASS + ' [class*="centerCol"]{',
+      '  background:rgb(var(--fg-rgb) / var(--fg-a)) !important;',
+      '  backdrop-filter:blur(var(--fg-blur)) saturate(150%) !important;',
+      '  -webkit-backdrop-filter:blur(var(--fg-blur)) saturate(150%) !important;',
+      '}',
+      'html.' + ROOT_CLASS + ' [class*="an3WzG_root"]{background:rgb(var(--fg-rgb) / calc(var(--fg-a) * 1.5)) !important}',
+      'html.' + ROOT_CLASS + ' [class*="sidebarCol"]{',
+      '  background:linear-gradient(180deg,rgb(var(--fg-rgb) / calc(var(--fg-a) * 2.6)) 0%,rgb(var(--fg-rgb) / calc(var(--fg-a) * 1.9)) 100%) !important;',
+      '}',
+      'html.' + ROOT_CLASS + ' [class*="wtg9ga_root"]{background:transparent !important}',
+      'html.' + ROOT_CLASS + ' [data-rightbar-col]{background:rgb(var(--fg-rgb) / calc(var(--fg-a) * 1.75)) !important}',
+      '/* 失焦保护：Windows 亚克力在窗口失焦时会停掉实时采样、退回纯色（整窗发白）。',
+      '   失焦瞬间铺上主题自带的柔和底图 → 看到的是彩色磨砂，而不是白板。 */',
+      'html.' + NATIVE_CLASS + '.dsh-frosted-glass-unfocused #' + BACKDROP_ID + '{display:block !important;opacity:1}',
+      'html.' + NATIVE_CLASS + '.dsh-frosted-glass-noguard.dsh-frosted-glass-unfocused #' + BACKDROP_ID + '{display:none !important}',
       '',
       '/* ---- 外壳：左栏 / 中栏 / 右栏 / 底栏 --------------------------------- */',
       'html.' + ROOT_CLASS + ' [class*="_frame"]{background:transparent !important}',
@@ -249,7 +269,6 @@ window.__ModuleLoader__.load({
       'html.' + NATIVE_CLASS + ' #root > div{background:transparent !important}',
       'html.' + NATIVE_CLASS + ' [class*="_frame"]{background:transparent !important}',
       'html.' + NATIVE_CLASS + ' [class*="sidebarCol"]{',
-      '  background:linear-gradient(180deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,.26) 100%) !important;',
       '  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;',
       '  border-right:1px solid rgba(255,255,255,.55) !important;',
       '  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);',
@@ -257,8 +276,6 @@ window.__ModuleLoader__.load({
       'html.' + NATIVE_CLASS + ' [class*="centerCol"]{',
       '  border-radius:8px 0 0 0 !important;',
       '  overflow:hidden !important;',
-      '  background:rgba(255,255,255,.16) !important;',
-      '  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;',
       '  box-shadow:none !important;',
       '}',
       '/* 输入框：正文从后面滚过时不能透出来 —— 提高不透明度 + 轻模糊 */',
@@ -284,8 +301,6 @@ window.__ModuleLoader__.load({
       '}',
       'html.' + NATIVE_CLASS + ' [class*="mainPanel"]{background:transparent !important}',
       'html.' + NATIVE_CLASS + ' [data-rightbar-col]{',
-      '  background:rgba(255,255,255,.28) !important;',
-      '  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;',
       '  border-left:1px solid rgba(255,255,255,.5) !important;',
       '}',
       'html.' + NATIVE_CLASS + ' [class*="bottomRow"]{background:transparent !important}',
@@ -293,23 +308,35 @@ window.__ModuleLoader__.load({
       'html.' + NATIVE_CLASS + ' body{--dsw-specific-sidebar-fill:rgba(255,255,255,.44)}',
       '/* 顶部系统框：贴一层和左栏同色的白色玻璃，压住裸露的亚克力灰调；底部一条极浅分隔线 */',
       '#' + STRIP_ID + '{position:fixed;top:0;left:0;right:0;height:40px;pointer-events:none;z-index:0;display:none}',
-      'html.' + NATIVE_CLASS + ' #' + STRIP_ID + '{display:block;background:rgba(255,255,255,.50) !important}',
-      'html.' + NATIVE_CLASS + '.' + DARK_CLASS + ' #' + STRIP_ID + '{background:rgba(34,40,52,.66) !important}',
+      'html.' + NATIVE_CLASS + ' #' + STRIP_ID + '{display:block;background:rgb(var(--fg-rgb) / calc(var(--fg-a) * 3.1)) !important}',
+      'html.' + ROOT_CLASS + '.' + DARK_CLASS + ' #' + STRIP_ID + '{background:rgb(var(--fg-rgb) / calc(var(--fg-a) * 2.2)) !important}',
       '/* 顶栏与左栏交界处的小圆角补块（填掉交流区圆角露出的亚克力灰，和窗角一样 8px） */',
       '#' + CORNER_ID + '{position:fixed;pointer-events:none;z-index:2;display:none;width:8px;height:8px;background:rgba(255,255,255,.80);clip-path:polygon(0 0, 8px 0, 4px 1.07px, 1.07px 4px, 0 8px)}',
       'html.' + NATIVE_CLASS + ' #' + CORNER_ID + '{display:block;background:rgba(255,255,255,.80) !important;clip-path:polygon(0 0, 8px 0, 4px 1.07px, 1.07px 4px, 0 8px) !important}',
       'html.' + NATIVE_CLASS + '.' + DARK_CLASS + ' #' + CORNER_ID + '{background:rgba(34,40,52,.66) !important}',
       'html.' + NATIVE_CLASS + '.' + DARK_CLASS + '{background:transparent !important}',
       'html.' + NATIVE_CLASS + '.' + DARK_CLASS + ' [class*="sidebarCol"]{',
-      '  background:linear-gradient(180deg,rgba(34,40,52,.56) 0%,rgba(26,31,41,.44) 100%) !important;',
       '  border-right:1px solid rgba(255,255,255,.10) !important;',
       '}',
-      'html.' + NATIVE_CLASS + '.' + DARK_CLASS + ' [class*="centerCol"]{',
-      '  background:rgba(24,29,38,.28) !important;',
-      '}',
-      'html.' + NATIVE_CLASS + '.' + DARK_CLASS + ' [data-rightbar-col]{',
-      '  background:rgba(28,34,44,.38) !important;',
-      '}',
+      '',
+      '/* ---- 主题设置小面板（玻璃白度 / 模糊强度 / 失焦保护）------------------ */',
+      '#dsh-fg-knob{position:fixed;right:10px;top:44%;width:34px;height:34px;border-radius:12px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.34);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:0 6px 18px rgba(24,45,88,.16);color:#2a3a55;display:flex;align-items:center;justify-content:center;font:600 15px/1 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;cursor:pointer;z-index:2147483000;user-select:none}',
+      '#dsh-fg-knob:hover{background:rgba(255,255,255,.55)}',
+      'html.' + DARK_CLASS + ' #dsh-fg-knob{background:rgba(30,36,48,.55);color:#e6ecf6;border-color:rgba(255,255,255,.18)}',
+      '#dsh-fg-panel{position:fixed;right:52px;top:44%;transform:translateY(-50%);width:250px;padding:14px 16px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.65);background:rgba(255,255,255,.86);backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);box-shadow:0 18px 46px rgba(24,45,88,.22);color:#16233a;font:12px/1.6 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;z-index:2147483000;display:none}',
+      'html.' + DARK_CLASS + ' #dsh-fg-panel{background:rgba(30,36,48,.92);color:#e6ecf6;border-color:rgba(255,255,255,.14)}',
+      '#dsh-fg-panel.open{display:block}',
+      '#dsh-fg-panel h4{margin:0 0 8px;font-size:13px;font-weight:600}',
+      '#dsh-fg-panel .row{margin:9px 0}',
+      '#dsh-fg-panel .row label{display:flex;justify-content:space-between;margin-bottom:3px;color:#46536b}',
+      'html.' + DARK_CLASS + ' #dsh-fg-panel .row label{color:#9fb0c8}',
+      '#dsh-fg-panel input[type=range]{width:100%;accent-color:#2563eb}',
+      '#dsh-fg-panel .guard{display:flex;align-items:center;gap:8px;margin:10px 0 2px;color:#46536b}',
+      'html.' + DARK_CLASS + ' #dsh-fg-panel .guard{color:#9fb0c8}',
+      '#dsh-fg-panel .btns{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}',
+      '#dsh-fg-panel button{appearance:none;border:0;border-radius:8px;padding:5px 10px;font:inherit;cursor:pointer;color:#16233a;background:rgba(255,255,255,.72);box-shadow:0 0 0 1px rgba(148,164,190,.35)}',
+      'html.' + DARK_CLASS + ' #dsh-fg-panel button{background:rgba(255,255,255,.1);color:#e6ecf6}',
+      '#dsh-fg-panel .hint{color:#7b8798;font-size:11px;margin-top:6px}',
       '',
     ].join('\n')
 
@@ -383,6 +410,8 @@ window.__ModuleLoader__.load({
     function syncDark() {
       var dark = !!(document.body && document.body.hasAttribute('data-ds-dark-theme'))
       document.documentElement.classList.toggle(DARK_CLASS, dark)
+      applySettings()
+      if (refreshPanelUi) refreshPanelUi()
     }
 
     /**
@@ -402,6 +431,8 @@ window.__ModuleLoader__.load({
 
     function syncNative() {
       document.documentElement.classList.toggle(NATIVE_CLASS, isNativeGlass())
+      applySettings()
+      if (refreshPanelUi) refreshPanelUi()
     }
 
     // ---- 真·透桌面补丁状态卡 ------------------------------------------------
@@ -529,14 +560,138 @@ window.__ModuleLoader__.load({
       }
     }
 
+    /* ---- 可调参数小面板：玻璃白度 / 模糊强度 / 失焦保护 ---------------------
+       值存在 localStorage，刷新后保留；不改宿主、不发网络请求。 */
+    var KNOB_ID = 'dsh-fg-knob'
+    var PANEL_ID = 'dsh-fg-panel'
+    var SETTINGS_KEY = 'dsh-frosted-glass-theme:settings'
+    var NOGUARD_CLASS = 'dsh-frosted-glass-noguard'
+    var UNFOCUSED_CLASS = 'dsh-frosted-glass-unfocused'
+    var settings = { alpha: null, blur: null, guard: true }
+    var refreshPanelUi = null
+    var onSettingsChanged = null
+
+    function loadSettings() {
+      try {
+        var raw = localStorage.getItem(SETTINGS_KEY)
+        if (!raw) return
+        var parsed = JSON.parse(raw)
+        if (typeof parsed.alpha === 'number') settings.alpha = Math.max(0, Math.min(60, parsed.alpha))
+        if (typeof parsed.blur === 'number') settings.blur = Math.max(0, Math.min(40, parsed.blur))
+        if (typeof parsed.guard === 'boolean') settings.guard = parsed.guard
+      } catch (error) { /* ignore */ }
+    }
+
+    function saveSettings() {
+      try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)) } catch (error) { /* ignore */ }
+    }
+
+    function applySettings() {
+      var root = document.documentElement
+      if (settings.alpha === null) root.style.removeProperty('--fg-a')
+      else root.style.setProperty('--fg-a', String(Math.round(settings.alpha) / 100))
+      if (settings.blur === null) root.style.removeProperty('--fg-blur')
+      else root.style.setProperty('--fg-blur', Math.round(settings.blur) + 'px')
+      root.classList.toggle(NOGUARD_CLASS, settings.guard === false)
+    }
+
+    function buildPanel() {
+      if (!document.body || document.getElementById(KNOB_ID)) return
+      var knob = document.createElement('div')
+      knob.id = KNOB_ID
+      knob.title = '磨砂玻璃主题设置'
+      knob.textContent = '◐'
+      knob.addEventListener('click', function () {
+        var panel = document.getElementById(PANEL_ID)
+        if (panel) panel.classList.toggle('open')
+      })
+      document.body.appendChild(knob)
+
+      var panel = document.createElement('div')
+      panel.id = PANEL_ID
+      panel.innerHTML = [
+        '<h4>磨砂玻璃</h4>',
+        '<div class="row"><label><span>玻璃白度</span><span data-role="alpha-val"></span></label>',
+        '<input type="range" min="0" max="60" step="1" data-role="alpha"></div>',
+        '<div class="row"><label><span>模糊强度</span><span data-role="blur-val"></span></label>',
+        '<input type="range" min="0" max="40" step="1" data-role="blur"></div>',
+        '<div class="guard"><input type="checkbox" data-role="guard"><span>失焦保护（窗口失焦时铺柔和底图，避免整窗发白）</span></div>',
+        '<div class="btns"><button type="button" data-role="reset">恢复默认</button><button type="button" data-role="close">关闭</button></div>',
+        '<div class="hint">真·透桌面模式下，模糊由 Windows 亚克力决定；白度滑块随时生效。</div>',
+      ].join('')
+      document.body.appendChild(panel)
+
+      var alphaInput = panel.querySelector('[data-role="alpha"]')
+      var blurInput = panel.querySelector('[data-role="blur"]')
+      var guardInput = panel.querySelector('[data-role="guard"]')
+      var alphaVal = panel.querySelector('[data-role="alpha-val"]')
+      var blurVal = panel.querySelector('[data-role="blur-val"]')
+
+      function nativeOn() { return document.documentElement.classList.contains(NATIVE_CLASS) }
+      function darkOn() { return document.documentElement.classList.contains(DARK_CLASS) }
+      function defaults() {
+        var alphaDefault = darkOn() ? 22 : 16
+        return { alpha: alphaDefault, blur: nativeOn() ? 0 : 22 }
+      }
+      function refreshUi() {
+        var d = defaults()
+        var alphaNow = settings.alpha === null ? d.alpha : settings.alpha
+        var blurNow = settings.blur === null ? d.blur : settings.blur
+        alphaInput.value = String(alphaNow)
+        blurInput.value = String(blurNow)
+        alphaVal.textContent = settings.alpha === null ? alphaNow + '%（默认）' : alphaNow + '%'
+        blurVal.textContent = settings.blur === null ? blurNow + 'px（默认）' : blurNow + 'px'
+        guardInput.checked = settings.guard !== false
+      }
+
+      alphaInput.addEventListener('input', function () {
+        settings.alpha = Number(alphaInput.value)
+        applySettings(); saveSettings(); refreshUi()
+      })
+      blurInput.addEventListener('input', function () {
+        settings.blur = Number(blurInput.value)
+        applySettings(); saveSettings(); refreshUi()
+      })
+      guardInput.addEventListener('change', function () {
+        settings.guard = !!guardInput.checked
+        applySettings(); saveSettings(); refreshUi()
+      })
+      panel.querySelector('[data-role="reset"]').addEventListener('click', function () {
+        settings = { alpha: null, blur: null, guard: true }
+        applySettings(); saveSettings(); refreshUi()
+      })
+      panel.querySelector('[data-role="close"]').addEventListener('click', function () {
+        panel.classList.remove('open')
+      })
+      refreshUi()
+      refreshPanelUi = refreshUi
+    }
+
+    function removePanel() {
+      var knob = document.getElementById(KNOB_ID)
+      if (knob) knob.remove()
+      var panel = document.getElementById(PANEL_ID)
+      if (panel) panel.remove()
+    }
+
+    function onWindowBlur() {
+      try { document.documentElement.classList.add(UNFOCUSED_CLASS) } catch (error) { /* ignore */ }
+    }
+    function onWindowFocus() {
+      try { document.documentElement.classList.remove(UNFOCUSED_CLASS) } catch (error) { /* ignore */ }
+    }
+
     function start() {
       document.documentElement.classList.add(ROOT_CLASS)
       injectStyle()
       injectBackdrop()
       injectStrip()
       injectCorner()
-
-
+      loadSettings()
+      applySettings()
+      buildPanel()
+      window.addEventListener('blur', onWindowBlur)
+      window.addEventListener('focus', onWindowFocus)
 
       syncDark()
       syncNative()
@@ -559,7 +714,6 @@ window.__ModuleLoader__.load({
       })
       return { observer: observer, nativeTimer: nativeTimer, patchCardTimer: patchCardTimer }
     }
-
     return {
       name: 'dsh-frosted-glass-theme',
       apply: function (ctx) {
@@ -582,7 +736,13 @@ window.__ModuleLoader__.load({
               clearTimeout(lifecycle.patchCardTimer)
             }
             removePatchCard()
-            document.documentElement.classList.remove(ROOT_CLASS, DARK_CLASS, NATIVE_CLASS)
+            removePanel()
+            window.removeEventListener('blur', onWindowBlur)
+            window.removeEventListener('focus', onWindowFocus)
+            document.documentElement.classList.remove(ROOT_CLASS, DARK_CLASS, NATIVE_CLASS, NOGUARD_CLASS, UNFOCUSED_CLASS)
+            document.documentElement.style.removeProperty('--fg-a')
+            document.documentElement.style.removeProperty('--fg-blur')
+            refreshPanelUi = null
             var style = document.getElementById(STYLE_ID)
             if (style) style.remove()
             var backdrop = document.getElementById(BACKDROP_ID)

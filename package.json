@@ -1,6 +1,6 @@
 ﻿{
   "name": "dsh-frosted-glass-theme",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "type": "module",
   "description": "Frosted glass theme for DeepSeek Harness: translucent blurred glass panels floating over a soft colorful backdrop. · 磨砂玻璃主题：半透明毛玻璃面板 + 柔和彩色玻璃底图，浅色/深色两套。",
   "license": "MIT",
@@ -59,4 +59,5 @@
     }
   }
 }
+
 
