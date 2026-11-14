@@ -6,6 +6,9 @@ DeepSeek Harness Web UI 的**磨砂玻璃主题**：半透明的白色毛玻璃�
 
 ![磨砂玻璃主题](https://raw.githubusercontent.com/H2137-yh/dsh-frosted-glass-theme/main/assets/screenshot-1.png)
 
+![对话页（磨砂玻璃 + 亚克力壁纸）](https://raw.githubusercontent.com/H2137-yh/dsh-frosted-glass-theme/main/assets/screenshot-2-conversation.png)
+
+![轨迹页（同一套玻璃，不再发白）](https://raw.githubusercontent.com/H2137-yh/dsh-frosted-glass-theme/main/assets/screenshot-3-trajectory.png)
 ## 它做什么
 
 - **一整层玻璃底图**：柔和冷色渐变 + 蓝/紫/薄荷/淡黄四团低饱和光斑 + 细噪点，纯 CSS（不加载外部图片；唯一的网络请求是同源状态接口，不出本机）。
@@ -123,5 +126,6 @@ dsh plugin --profile <profile> add link:F:/path/to/dsh-frosted-glass-theme
 ## 许可
 
 MIT
+
 
 
