@@ -4,7 +4,6 @@ dist/
 node_modules/
 _profile-backup/
 _dsh-patch-backup/
-test/
 *.log
 *.tgz
 *.dsh-frosted-glass-backup

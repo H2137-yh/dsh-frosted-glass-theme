@@ -106,7 +106,9 @@ function snapshot(mainPath, autoPatch) {
 export function apply(ctx, config) {
   try {
     const cfg = config && typeof config === 'object' ? config : {}
-    const autoPatch = cfg.autoPatch !== false
+    // 默认只检测、不动宿主文件：上架版必须由用户显式 opt-in（cfg.autoPatch: true）
+    // 才会自动改 DSH Desktop 的 main.js。本机想自动打补丁就在 profile 里显式打开。
+    const autoPatch = cfg.autoPatch === true
     const log = makeLogger(cfg)
     let mainPath = null
     try {
