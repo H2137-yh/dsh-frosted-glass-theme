@@ -1,4 +1,4 @@
-# dsh-frosted-glass-theme · 磨砂玻璃主题
+﻿# dsh-frosted-glass-theme · 磨砂玻璃主题
 
 [中文](#) | 简体中文
 
@@ -13,7 +13,7 @@ DeepSeek Harness Web UI 的**磨砂玻璃主题**：半透明的白色毛玻璃�
 - **轨迹 / 统计页同色**：上游的轨迹页在容器上叠了 4 层 `--dsw-alias-bg-layer-1`（root → split → tablePane → table），叠起来接近实白；本主题把这些容器层统一拍透明，只保留对话页那一层玻璃，表头/详情卡用一点毛玻璃保证滚动可读。统计页同理。
 - **够透但不糊字**：面板白度整体收到对话页一档（中栏 16% + 视图根 24%），文字依旧压在浅色玻璃上；输入卡片与代码块保留更高不透明度，保证正文可读。
 - **跟随 DSH 配色**：DSH 切深色时自动换成深色玻璃 + 深色底图（深色下轨迹页同样只有一层玻璃）。
-- **输入栏与提问框比背景更深一档**：输入卡片、`ask_user_question` 提问卡用 92% 白 + 24px 模糊，后面的正文不会透上来和框里的文字糊在一起（浅色/深色都这样）。
+- **输入栏与提问框比背景更深一档**：输入卡片、`ask_user_question` 提问卡用 70% 白 + 24px 模糊，后面的正文不会透上来和框里的文字糊在一起（浅色/深色都这样）。
 - **主题本体纯前端**：玻璃 CSS / 底图 / 深色跟随全部在浏览器里（`client.js`）。Host 半侧（`index.js`）只做三件事：检测 DSH Desktop 桌面的「真·透桌面」补丁状态、按配置决定是否打/还原该补丁（**默认不打**，需显式开启）、给右下角状态卡提供一个同源 `/api/frosted-glass-theme/*` 接口。不联网、不收集数据、不读会话内容。
 - **可干净卸载**：插件停用/卸载时，注入的 CSS、底图、class 全部由 `ctx.effect` 清理。
 
@@ -104,7 +104,7 @@ dsh plugin --profile <profile> add link:F:/path/to/dsh-frosted-glass-theme
 
 ### 0.1.2
 
-- **输入栏与提问框加深**：`--dsw-specific-input-major` 提到 92% 白（深色 92% 深灰），`ask_user_question` 提问卡按 `[data-question-key] > section` 单独加 24px 模糊——解决「输入框 / 提问卡和主页文字叠在一起看不清」的问题。这一条是有意比其它面板更不透明，属于可读性优先。
+- **输入栏与提问框加深**：`--dsw-specific-input-major` 提到 70% 白（深色 70% 深灰，按你的要求定 70%），`ask_user_question` 提问卡按 `[data-question-key] > section` 单独加 24px 模糊——解决「输入框 / 提问卡和主页文字叠在一起看不清」的问题。这一条是有意比其它面板更不透明，属于可读性优先。
 - **默认不再自动修改宿主程序**：`autoPatch` 默认 `false`，只检测并由状态卡让用户显式确认再打补丁；想要自动打可在 profile 里配 `config: { autoPatch: true }`。README 里关于 host 半侧行为的描述全部改回与代码一致（注册同源状态接口、写一行状态日志、可选改 `main.js`）。
 - 还原脚本随仓库提供（`tools/`），不再只放在被 gitignore 的本地备份目录里。
 
@@ -123,3 +123,4 @@ dsh plugin --profile <profile> add link:F:/path/to/dsh-frosted-glass-theme
 ## 许可
 
 MIT
+
