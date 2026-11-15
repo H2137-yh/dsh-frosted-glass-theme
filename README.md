@@ -105,7 +105,13 @@ dsh plugin --profile <profile> add link:F:/path/to/dsh-frosted-glass-theme
 # 直接改 client.js 里的 CSS 数组，然后在 DSH 里刷新页面看效果
 ```
 
-## 更新日志
+'## 更新日志
+
+### 0.3.0
+
+- **新「壁纸模糊」模式**：面板顶部「玻璃来源」可切「真·透桌面 / 壁纸模糊」。切到壁纸模糊后，页面会向宿主请求当前桌面壁纸（`GET /api/frosted-glass-theme/wallpaper`，本机同源），铺在页面底层并由**磨砂模糊滑块直接控制整窗模糊（0–40px）**——这是真·透桌面模式下做不到的（整窗模糊由 Windows 亚克力固定）。代价：只透壁纸、不透其他窗口，动态壁纸变静帧。
+- 切回「真·透桌面」即恢复实时亚克力。
+- 宿主新增 `/wallpaper` 只读接口（读 `HKCU\Control Panel\Desktop\WallPaper` 指向的图片原样返回，不落盘、不联网）。'
 
 ### 0.2.1
 
@@ -141,6 +147,7 @@ dsh plugin --profile <profile> add link:F:/path/to/dsh-frosted-glass-theme
 ## 许可
 
 MIT
+
 
 
 

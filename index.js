@@ -1,4 +1,4 @@
-/**
+﻿/**
  * dsh-frosted-glass-theme —— Host 半侧。
  *
  * 做两件事，全部「尽力而为、绝不抛错」（Host 插件加载失败会让整个 DSH 起不来）：
@@ -21,7 +21,8 @@
  *   autoPatch  启动时是否自动打补丁，默认 true；设为 false 则只检测、由用户在状态卡里手动点
  *   logDir     日志目录，默认 <插件目录>/logs
  */
-import { appendFileSync, mkdirSync, statSync } from 'node:fs'
+import { appendFileSync, mkdirSync, readFileSync, statSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -39,6 +40,29 @@ export const inject = ['webServer']
 const PLUGIN_DIR = dirname(fileURLToPath(import.meta.url))
 const API_PREFIX = '/api/frosted-glass-theme'
 const MAX_LOG_BYTES = 512 * 1024
+
+/** 当前桌面壁纸文件（HKCU\Control Panel\Desktop\WallPaper），拿不到返回 null。 */
+function desktopWallpaperPath() {
+  try {
+    const out = execFileSync('reg', ['query', 'HKCU\\Control Panel\\Desktop', '/v', 'WallPaper'], {
+      encoding: 'utf8',
+      windowsHide: true,
+    })
+    const hit = out.match(/WallPaper\s+REG_SZ\s+(.+)/i)
+    return hit ? hit[1].trim() : null
+  } catch {
+    return null
+  }
+}
+
+function wallpaperMime(file) {
+  const lower = String(file).toLowerCase()
+  if (lower.endsWith('.png')) return 'image/png'
+  if (lower.endsWith('.webp')) return 'image/webp'
+  if (lower.endsWith('.gif')) return 'image/gif'
+  if (lower.endsWith('.bmp')) return 'image/bmp'
+  return 'image/jpeg'
+}
 
 function safeString(value) {
   try {
@@ -168,6 +192,24 @@ export function apply(ctx, config) {
 
           if (route === '/status' && method === 'GET') return sendJson(res, 200, snapshot(mainPath, autoPatch))
 
+          // 壁纸模糊模式用：把当前桌面壁纸原样发给页面（同源、本机）
+          if (route === '/wallpaper' && method === 'GET') {
+            const file = desktopWallpaperPath()
+            if (!file) return sendJson(res, 404, { ok: false, error: 'desktop wallpaper not found' })
+            try {
+              const buffer = readFileSync(file)
+              res.writeHead(200, {
+                'Content-Type': wallpaperMime(file),
+                'Content-Length': buffer.length,
+                'Cache-Control': 'no-store',
+              })
+              res.end(buffer)
+              return
+            } catch (error) {
+              return sendJson(res, 500, { ok: false, error: safeString(error), file })
+            }
+          }
+
           if (route === '/apply' && (method === 'POST' || method === 'GET')) {
             const result = applyDesktopPatch(mainPath)
             log(result.ok ? 'info' : 'warn', `manual apply: ${JSON.stringify(result)}`)
@@ -203,3 +245,4 @@ export function apply(ctx, config) {
     } catch { /* ignore */ }
   }
 }
+

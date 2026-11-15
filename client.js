@@ -1,4 +1,4 @@
-﻿/**
+/**
  * dsh-frosted-glass-theme —— 浏览器半侧（手写 __ModuleLoader__ bundle，零构建）。
  *
  * 把 DeepSeek Harness 的 Web UI 变成「磨砂玻璃」主题：
@@ -26,6 +26,8 @@ window.__ModuleLoader__.load({
     var ROOT_CLASS = 'dsh-frosted-glass'
     var DARK_CLASS = 'dsh-frosted-glass-dark'
     var NATIVE_CLASS = 'dsh-frosted-glass-native'
+    var WALLPAPER_CLASS = 'dsh-frosted-glass-wallpaper'
+    var WALL_ID = 'dsh-fg-wall'
 
     // ---- 玻璃底图（纯 CSS：渐变 + 光斑 + SVG 噪点） -------------------------
     var BACKDROP_LIGHT =
@@ -317,6 +319,15 @@ window.__ModuleLoader__.load({
       '  border-right:1px solid rgba(255,255,255,.10) !important;',
       '}',
       '',
+      '/* ---- 壁纸模糊模式：页面自己画桌面壁纸并做 CSS 模糊（滑块真能看见） ----- */',
+      '#dsh-fg-wall{position:fixed;inset:0;z-index:0;pointer-events:none;display:none;background-size:cover;background-position:center;background-repeat:no-repeat;transform:scale(1.04);filter:blur(var(--fg-blur)) saturate(1.05)}',
+      'html.' + WALLPAPER_CLASS + ' #dsh-fg-wall{display:block}',
+      'html.' + WALLPAPER_CLASS + '{--fg-blur:22px}',
+      'html.' + WALLPAPER_CLASS + ' #' + BACKDROP_ID + '{display:none !important}',
+      'html.' + WALLPAPER_CLASS + ' [class*="centerCol"],',
+      'html.' + WALLPAPER_CLASS + ' [class*="sidebarCol"],',
+      'html.' + WALLPAPER_CLASS + ' [data-rightbar-col]{backdrop-filter:none !important;-webkit-backdrop-filter:none !important}',
+      '',
       '/* ---- 主题设置小面板（玻璃白度 / 模糊强度 / 失焦保护）------------------ */',
       '#dsh-fg-knob{position:fixed;left:0;top:50%;width:18px;height:46px;border-left:0;border-radius:0 12px 12px 0;opacity:.55;font-size:11px;transition:opacity .15s ease,background .15s ease;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.34);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:0 6px 18px rgba(24,45,88,.16);color:#2a3a55;display:flex;align-items:center;justify-content:center;font:600 15px/1 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;cursor:pointer;z-index:2147483000;user-select:none}',
       '#dsh-fg-knob:hover{background:rgba(255,255,255,.70);opacity:1}',
@@ -335,6 +346,11 @@ window.__ModuleLoader__.load({
       '#dsh-fg-panel button{appearance:none;border:0;border-radius:8px;padding:5px 10px;font:inherit;cursor:pointer;color:#16233a;background:rgba(255,255,255,.72);box-shadow:0 0 0 1px rgba(148,164,190,.35)}',
       'html.' + DARK_CLASS + ' #dsh-fg-panel button{background:rgba(255,255,255,.1);color:#e6ecf6}',
       '#dsh-fg-panel .hint{color:#7b8798;font-size:11px;margin-top:6px}',
+      '#dsh-fg-panel .modes{display:flex;gap:6px;margin-top:4px}',
+      '#dsh-fg-panel .modes button{flex:1;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.6);box-shadow:0 0 0 1px rgba(148,164,190,.35);color:#46536b}',
+      '#dsh-fg-panel .modes button.active{background:#2563eb;color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.28)}',
+      'html.' + DARK_CLASS + ' #dsh-fg-panel .modes button{background:rgba(255,255,255,.1);color:#c7d3e6}',
+      'html.' + DARK_CLASS + ' #dsh-fg-panel .modes button.active{background:#2563eb;color:#fff}',
       '',
     ].join('\n')
 
@@ -565,7 +581,7 @@ window.__ModuleLoader__.load({
     var SETTINGS_KEY = 'dsh-frosted-glass-theme:settings'
     var NOGUARD_CLASS = 'dsh-frosted-glass-noguard'
     var UNFOCUSED_CLASS = 'dsh-frosted-glass-unfocused'
-    var settings = { alpha: null, blur: null, guard: true, pos: null }
+    var settings = { alpha: null, blur: null, guard: true, pos: null, mode: null }
     var refreshPanelUi = null
     var onResizePanel = null
 
@@ -578,6 +594,7 @@ window.__ModuleLoader__.load({
         if (typeof parsed.blur === 'number') settings.blur = Math.max(0, Math.min(40, parsed.blur))
         if (typeof parsed.guard === 'boolean') settings.guard = parsed.guard
         if (parsed.pos && typeof parsed.pos.x === 'number' && typeof parsed.pos.y === 'number') settings.pos = { x: parsed.pos.x, y: parsed.pos.y }
+        if (parsed.mode === 'wallpaper' || parsed.mode === 'native') settings.mode = parsed.mode
       } catch (error) { /* ignore */ }
     }
 
@@ -592,6 +609,47 @@ window.__ModuleLoader__.load({
       if (settings.blur === null) root.style.removeProperty('--fg-blur')
       else root.style.setProperty('--fg-blur', Math.round(settings.blur) + 'px')
       root.classList.toggle(NOGUARD_CLASS, settings.guard === false)
+      var wallpaperMode = settings.mode === 'wallpaper'
+      root.classList.toggle(WALLPAPER_CLASS, wallpaperMode)
+      ensureWall()
+      if (wallpaperMode) loadWallpaper()
+    }
+
+    /* ---- 壁纸模糊模式：把本机桌面壁纸拉过来当底，CSS 模糊由滑块控制 ---- */
+    var wallLoaded = false
+    var wallLoading = false
+    function ensureWall() {
+      if (!document.body) return null
+      var wall = document.getElementById(WALL_ID)
+      if (wall) return wall
+      wall = document.createElement('div')
+      wall.id = WALL_ID
+      wall.setAttribute('aria-hidden', 'true')
+      document.body.insertBefore(wall, document.body.firstChild)
+      return wall
+    }
+    function loadWallpaper() {
+      var wall = ensureWall()
+      if (!wall || wallLoaded || wallLoading) return
+      wallLoading = true
+      try {
+        fetch('/api/frosted-glass-theme/wallpaper', { cache: 'no-store' })
+          .then(function (res) { return res.ok ? res.blob() : null })
+          .then(function (blob) {
+            wallLoading = false
+            if (!blob) throw new Error('no wallpaper')
+            var url = URL.createObjectURL(blob)
+            wall.style.backgroundImage = 'url("' + url + '")'
+            wallLoaded = true
+          })
+          .catch(function () {
+            wallLoading = false
+            // 宿主接口不可用（浏览器版 / 老宿主）→ 退回主题自带的柔和底图，滑块仍作用于浮层
+            wall.style.backgroundImage = BACKDROP_LIGHT
+          })
+      } catch (error) {
+        wallLoading = false
+      }
     }
 
     function buildPanel() {
@@ -606,13 +664,16 @@ window.__ModuleLoader__.load({
       panel.id = PANEL_ID
       panel.innerHTML = [
         '<h4>磨砂玻璃</h4>',
+        '<div class="row"><label><span>玻璃来源</span><span data-role="mode-val"></span></label>',
+        '<div class="modes"><button type="button" data-role="mode-native">真·透桌面</button>',
+        '<button type="button" data-role="mode-wallpaper">壁纸模糊</button></div></div>',
         '<div class="row"><label><span>玻璃白度</span><span data-role="alpha-val"></span></label>',
         '<input type="range" min="0" max="60" step="1" data-role="alpha"></div>',
         '<div class="row"><label><span>磨砂模糊</span><span data-role="blur-val"></span></label>',
         '<input type="range" min="0" max="40" step="1" data-role="blur"></div>',
         '<div class="guard"><input type="checkbox" data-role="guard"><span>失焦保护（窗口失焦时铺柔和底图，避免整窗发白）</span></div>',
         '<div class="btns"><button type="button" data-role="reset">恢复默认</button><button type="button" data-role="close">关闭</button></div>',
-        '<div class="hint">「磨砂模糊」作用于输入框、提问卡、菜单等浮层，以及模拟玻璃模式的整窗；真·透桌面时整窗模糊由 Windows 亚克力固定。拖动 ◐ 可换位置（面板会跟着换边）。</div>',
+        '<div class="hint">「壁纸模糊」用本机桌面壁纸当底、由模糊滑块直接控制整窗模糊（0–40px），看得见效果；代价是只透壁纸、不透其他窗口，动态壁纸变静帧。真·透桌面模式下整窗模糊由 Windows 亚克力固定，滑块只影响输入框/提问卡/菜单等浮层。拖动 ◐ 可换位置。</div>',
       ].join('')
       document.body.appendChild(panel)
 
@@ -700,9 +761,10 @@ window.__ModuleLoader__.load({
 
       function nativeOn() { return document.documentElement.classList.contains(NATIVE_CLASS) }
       function darkOn() { return document.documentElement.classList.contains(DARK_CLASS) }
+      function wallpaperOn() { return settings.mode === 'wallpaper' }
       function defaults() {
         var alphaDefault = darkOn() ? 22 : 16
-        return { alpha: alphaDefault, blur: nativeOn() ? 0 : 22 }
+        return { alpha: alphaDefault, blur: wallpaperOn() || !nativeOn() ? 22 : 0 }
       }
       function refreshUi() {
         var d = defaults()
@@ -713,7 +775,23 @@ window.__ModuleLoader__.load({
         alphaVal.textContent = settings.alpha === null ? alphaNow + '%（默认）' : alphaNow + '%'
         blurVal.textContent = settings.blur === null ? blurNow + 'px（默认）' : blurNow + 'px'
         guardInput.checked = settings.guard !== false
+        var effMode = settings.mode || (nativeOn() ? 'native' : 'wallpaper')
+        var nativeBtn = panel.querySelector('[data-role="mode-native"]')
+        var wallBtn = panel.querySelector('[data-role="mode-wallpaper"]')
+        if (nativeBtn) nativeBtn.classList.toggle('active', effMode === 'native')
+        if (wallBtn) wallBtn.classList.toggle('active', effMode === 'wallpaper')
+        var modeVal = panel.querySelector('[data-role="mode-val"]')
+        if (modeVal) modeVal.textContent = settings.mode ? '' : '（自动）'
       }
+
+      panel.querySelector('[data-role="mode-native"]').addEventListener('click', function () {
+        settings.mode = 'native'
+        applySettings(); saveSettings(); refreshUi()
+      })
+      panel.querySelector('[data-role="mode-wallpaper"]').addEventListener('click', function () {
+        settings.mode = 'wallpaper'
+        applySettings(); saveSettings(); refreshUi()
+      })
 
       alphaInput.addEventListener('input', function () {
         settings.alpha = Number(alphaInput.value)
@@ -728,7 +806,7 @@ window.__ModuleLoader__.load({
         applySettings(); saveSettings(); refreshUi()
       })
       panel.querySelector('[data-role="reset"]').addEventListener('click', function () {
-        settings = { alpha: null, blur: null, guard: true, pos: settings.pos }
+        settings = { alpha: null, blur: null, guard: true, pos: settings.pos, mode: settings.mode }
         applySettings(); saveSettings(); refreshUi()
       })
       panel.querySelector('[data-role="close"]').addEventListener('click', function () {
@@ -833,6 +911,10 @@ window.__ModuleLoader__.load({
     }
   },
 })
+
+
+
+
 
 
 
