@@ -318,8 +318,8 @@ window.__ModuleLoader__.load({
       '}',
       '',
       '/* ---- 主题设置小面板（玻璃白度 / 模糊强度 / 失焦保护）------------------ */',
-      '#dsh-fg-knob{position:fixed;left:10px;top:44%;width:34px;height:34px;border-radius:12px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.34);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:0 6px 18px rgba(24,45,88,.16);color:#2a3a55;display:flex;align-items:center;justify-content:center;font:600 15px/1 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;cursor:pointer;z-index:2147483000;user-select:none}',
-      '#dsh-fg-knob:hover{background:rgba(255,255,255,.55)}',
+      '#dsh-fg-knob{position:fixed;left:12px;bottom:104px;width:30px;height:30px;border-radius:10px;opacity:.72;transition:opacity .15s ease;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.34);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:0 6px 18px rgba(24,45,88,.16);color:#2a3a55;display:flex;align-items:center;justify-content:center;font:600 15px/1 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;cursor:pointer;z-index:2147483000;user-select:none}',
+      '#dsh-fg-knob:hover{background:rgba(255,255,255,.62);opacity:1}',
       'html.' + DARK_CLASS + ' #dsh-fg-knob{background:rgba(30,36,48,.55);color:#e6ecf6;border-color:rgba(255,255,255,.18)}',
       '#dsh-fg-panel{position:fixed;left:52px;top:44%;width:250px;padding:14px 16px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.65);background:rgba(255,255,255,.86);backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);box-shadow:0 18px 46px rgba(24,45,88,.22);color:#16233a;font:12px/1.6 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;z-index:2147483000;display:none}',
       'html.' + DARK_CLASS + ' #dsh-fg-panel{background:rgba(30,36,48,.92);color:#e6ecf6;border-color:rgba(255,255,255,.14)}',
@@ -628,7 +628,7 @@ window.__ModuleLoader__.load({
       function applyKnobPos() {
         var p = settings.pos
         if (!p || typeof p.x !== 'number' || typeof p.y !== 'number') {
-          var def = { x: 10, y: Math.round(window.innerHeight * 0.44) }
+          var def = { x: 12, y: Math.max(8, window.innerHeight - 104 - 30) }
           knob.style.left = def.x + 'px'
           knob.style.top = def.y + 'px'
           return
@@ -833,6 +833,7 @@ window.__ModuleLoader__.load({
     }
   },
 })
+
 
 
 
