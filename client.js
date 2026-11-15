@@ -1,4 +1,4 @@
-/**
+﻿/**
  * dsh-frosted-glass-theme —— 浏览器半侧（手写 __ModuleLoader__ bundle，零构建）。
  *
  * 把 DeepSeek Harness 的 Web UI 变成「磨砂玻璃」主题：
@@ -82,7 +82,7 @@ window.__ModuleLoader__.load({
       '  --dsw-alias-bg-overlay:rgba(255,255,255,.20);',
       '  --dsw-specific-sidebar-fill:rgba(255,255,255,.34);',
       '  --dsw-specific-menu:rgba(255,255,255,.48);',
-      '  --dsw-menu-backdrop-filter:blur(26px) saturate(170%);',
+      '  --dsw-menu-backdrop-filter:blur(calc(14px + var(--fg-blur) * 0.6)) saturate(170%);',
       '  --dsw-specific-bubble:rgba(255,255,255,.40);',
       '  --dsw-specific-tip:rgba(255,255,255,.34);',
       '  --dsw-specific-selector:rgba(255,255,255,.34);',
@@ -116,27 +116,25 @@ window.__ModuleLoader__.load({
       'html.' + ROOT_CLASS + ' [class*="wtg9ga_root"]{background:transparent !important}',
       'html.' + ROOT_CLASS + ' [data-rightbar-col]{background:rgb(var(--fg-rgb) / calc(var(--fg-a) * 1.75)) !important}',
       '/* 失焦保护：Windows 亚克力在窗口失焦时会停掉实时采样、退回纯色（整窗发白）。',
-      '   失焦瞬间铺上主题自带的柔和底图 → 看到的是彩色磨砂，而不是白板。 */',
-      'html.' + NATIVE_CLASS + '.dsh-frosted-glass-unfocused #' + BACKDROP_ID + '{display:block !important;opacity:1}',
-      'html.' + NATIVE_CLASS + '.dsh-frosted-glass-noguard.dsh-frosted-glass-unfocused #' + BACKDROP_ID + '{display:none !important}',
+      '   失焦时铺上主题自带的柔和底图（带一点饱和度和压暗，避免整片发白），',
+      '   用 opacity 过渡做淡入淡出，不做 display 硬切。 */',
+      'html.' + NATIVE_CLASS + ' #' + BACKDROP_ID + '{opacity:0;transition:opacity .28s ease-out}',
+      'html.' + NATIVE_CLASS + '.dsh-frosted-glass-unfocused #' + BACKDROP_ID + '{opacity:1 !important;filter:saturate(1.18) brightness(.93)}',
+      'html.' + NATIVE_CLASS + '.dsh-frosted-glass-noguard.dsh-frosted-glass-unfocused #' + BACKDROP_ID + '{opacity:0 !important}',
       '',
       '/* ---- 外壳：左栏 / 中栏 / 右栏 / 底栏 --------------------------------- */',
       'html.' + ROOT_CLASS + ' [class*="_frame"]{background:transparent !important}',
       'html.' + ROOT_CLASS + ' [class*="sidebarCol"]{',
-      '  background:linear-gradient(180deg,rgba(255,255,255,.48) 0%,rgba(255,255,255,.32) 100%) !important;',
-      '  backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);',
+      '  backdrop-filter:blur(calc(8px + var(--fg-blur) * 0.8)) saturate(180%);-webkit-backdrop-filter:blur(calc(8px + var(--fg-blur) * 0.8)) saturate(180%);',
       '  border-right:1px solid rgba(255,255,255,.62) !important;',
       '  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset -1px 0 0 rgba(255,255,255,.22);',
       '}',
       'html.' + ROOT_CLASS + ' [class*="centerCol"]{',
-      '  background:rgba(255,255,255,.16) !important;',
-      '  backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);',
       '  box-shadow:inset 0 1px 0 rgba(255,255,255,.55);',
       '}',
       'html.' + ROOT_CLASS + ' [class*="mainPanel"]{background:transparent !important}',
       'html.' + ROOT_CLASS + ' [data-rightbar-col]{',
-      '  background:rgba(255,255,255,.28) !important;',
-      '  backdrop-filter:blur(28px) saturate(175%);-webkit-backdrop-filter:blur(28px) saturate(175%);',
+      '  backdrop-filter:blur(calc(8px + var(--fg-blur) * 0.8)) saturate(175%);-webkit-backdrop-filter:blur(calc(8px + var(--fg-blur) * 0.8)) saturate(175%);',
       '  border-left:1px solid rgba(255,255,255,.55) !important;',
       '}',
       'html.' + ROOT_CLASS + ' [class*="bottomRow"]{background:transparent !important}',
@@ -264,7 +262,7 @@ window.__ModuleLoader__.load({
       '   页面侧不画底图；面板只叠半透明白色。切换由 __DSH_NATIVE_GLASS__ 触发。 */',
       'html.' + NATIVE_CLASS + '{background:transparent !important}',
       'html.' + NATIVE_CLASS + ' body{background:transparent !important}',
-      'html.' + NATIVE_CLASS + ' #' + BACKDROP_ID + '{display:none !important}',
+      'html.' + NATIVE_CLASS + ' #' + BACKDROP_ID + '{display:block !important}',
       'html.' + NATIVE_CLASS + ' #root{background:transparent !important}',
       'html.' + NATIVE_CLASS + ' #root > div{background:transparent !important}',
       'html.' + NATIVE_CLASS + ' [class*="_frame"]{background:transparent !important}',
@@ -281,7 +279,7 @@ window.__ModuleLoader__.load({
       '/* 输入框：正文从后面滚过时不能透出来 —— 提高不透明度 + 轻模糊 */',
       'html.' + NATIVE_CLASS + ' [data-composer-card]{',
       '  background:rgba(255,255,255,.80) !important;',
-      '  backdrop-filter:blur(24px) saturate(165%) !important;-webkit-backdrop-filter:blur(24px) saturate(165%) !important;',
+      '  backdrop-filter:blur(calc(12px + var(--fg-blur) * 0.7)) saturate(165%) !important;-webkit-backdrop-filter:blur(calc(12px + var(--fg-blur) * 0.7)) saturate(165%) !important;',
       '  box-shadow:0 10px 30px rgba(24,45,88,.10),inset 0 0 0 1px rgba(255,255,255,.55);',
       '}',
       'html.' + NATIVE_CLASS + '.' + DARK_CLASS + ' [data-composer-card]{',
@@ -292,7 +290,7 @@ window.__ModuleLoader__.load({
       '   否则卡片后面的正文会透上来，和卡片里的选项文字糊在一起。 */',
       'html.' + ROOT_CLASS + ' [data-question-key] > section{',
       '  background:rgba(255,255,255,.80) !important;',
-      '  backdrop-filter:blur(24px) saturate(165%);-webkit-backdrop-filter:blur(24px) saturate(165%);',
+      '  backdrop-filter:blur(calc(12px + var(--fg-blur) * 0.7)) saturate(165%);-webkit-backdrop-filter:blur(calc(12px + var(--fg-blur) * 0.7)) saturate(165%);',
       '  box-shadow:0 16px 40px rgba(24,45,88,.16),inset 0 0 0 1px rgba(255,255,255,.62);',
       '}',
       'html.' + ROOT_CLASS + '.' + DARK_CLASS + ' [data-question-key] > section{',
@@ -320,10 +318,10 @@ window.__ModuleLoader__.load({
       '}',
       '',
       '/* ---- 主题设置小面板（玻璃白度 / 模糊强度 / 失焦保护）------------------ */',
-      '#dsh-fg-knob{position:fixed;right:10px;top:44%;width:34px;height:34px;border-radius:12px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.34);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:0 6px 18px rgba(24,45,88,.16);color:#2a3a55;display:flex;align-items:center;justify-content:center;font:600 15px/1 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;cursor:pointer;z-index:2147483000;user-select:none}',
+      '#dsh-fg-knob{position:fixed;left:10px;top:44%;width:34px;height:34px;border-radius:12px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.34);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:0 6px 18px rgba(24,45,88,.16);color:#2a3a55;display:flex;align-items:center;justify-content:center;font:600 15px/1 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;cursor:pointer;z-index:2147483000;user-select:none}',
       '#dsh-fg-knob:hover{background:rgba(255,255,255,.55)}',
       'html.' + DARK_CLASS + ' #dsh-fg-knob{background:rgba(30,36,48,.55);color:#e6ecf6;border-color:rgba(255,255,255,.18)}',
-      '#dsh-fg-panel{position:fixed;right:52px;top:44%;transform:translateY(-50%);width:250px;padding:14px 16px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.65);background:rgba(255,255,255,.86);backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);box-shadow:0 18px 46px rgba(24,45,88,.22);color:#16233a;font:12px/1.6 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;z-index:2147483000;display:none}',
+      '#dsh-fg-panel{position:fixed;left:52px;top:44%;width:250px;padding:14px 16px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.65);background:rgba(255,255,255,.86);backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);box-shadow:0 18px 46px rgba(24,45,88,.22);color:#16233a;font:12px/1.6 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;z-index:2147483000;display:none}',
       'html.' + DARK_CLASS + ' #dsh-fg-panel{background:rgba(30,36,48,.92);color:#e6ecf6;border-color:rgba(255,255,255,.14)}',
       '#dsh-fg-panel.open{display:block}',
       '#dsh-fg-panel h4{margin:0 0 8px;font-size:13px;font-weight:600}',
@@ -567,9 +565,9 @@ window.__ModuleLoader__.load({
     var SETTINGS_KEY = 'dsh-frosted-glass-theme:settings'
     var NOGUARD_CLASS = 'dsh-frosted-glass-noguard'
     var UNFOCUSED_CLASS = 'dsh-frosted-glass-unfocused'
-    var settings = { alpha: null, blur: null, guard: true }
+    var settings = { alpha: null, blur: null, guard: true, pos: null }
     var refreshPanelUi = null
-    var onSettingsChanged = null
+    var onResizePanel = null
 
     function loadSettings() {
       try {
@@ -579,6 +577,7 @@ window.__ModuleLoader__.load({
         if (typeof parsed.alpha === 'number') settings.alpha = Math.max(0, Math.min(60, parsed.alpha))
         if (typeof parsed.blur === 'number') settings.blur = Math.max(0, Math.min(40, parsed.blur))
         if (typeof parsed.guard === 'boolean') settings.guard = parsed.guard
+        if (parsed.pos && typeof parsed.pos.x === 'number' && typeof parsed.pos.y === 'number') settings.pos = { x: parsed.pos.x, y: parsed.pos.y }
       } catch (error) { /* ignore */ }
     }
 
@@ -599,12 +598,8 @@ window.__ModuleLoader__.load({
       if (!document.body || document.getElementById(KNOB_ID)) return
       var knob = document.createElement('div')
       knob.id = KNOB_ID
-      knob.title = '磨砂玻璃主题设置'
+      knob.title = '磨砂玻璃主题设置（可拖动）'
       knob.textContent = '◐'
-      knob.addEventListener('click', function () {
-        var panel = document.getElementById(PANEL_ID)
-        if (panel) panel.classList.toggle('open')
-      })
       document.body.appendChild(knob)
 
       var panel = document.createElement('div')
@@ -613,13 +608,89 @@ window.__ModuleLoader__.load({
         '<h4>磨砂玻璃</h4>',
         '<div class="row"><label><span>玻璃白度</span><span data-role="alpha-val"></span></label>',
         '<input type="range" min="0" max="60" step="1" data-role="alpha"></div>',
-        '<div class="row"><label><span>模糊强度</span><span data-role="blur-val"></span></label>',
+        '<div class="row"><label><span>磨砂模糊</span><span data-role="blur-val"></span></label>',
         '<input type="range" min="0" max="40" step="1" data-role="blur"></div>',
         '<div class="guard"><input type="checkbox" data-role="guard"><span>失焦保护（窗口失焦时铺柔和底图，避免整窗发白）</span></div>',
         '<div class="btns"><button type="button" data-role="reset">恢复默认</button><button type="button" data-role="close">关闭</button></div>',
-        '<div class="hint">真·透桌面模式下，模糊由 Windows 亚克力决定；白度滑块随时生效。</div>',
+        '<div class="hint">「磨砂模糊」作用于输入框、提问卡、菜单等浮层，以及模拟玻璃模式的整窗；真·透桌面时整窗模糊由 Windows 亚克力固定。拖动 ◐ 可换位置（面板会跟着换边）。</div>',
       ].join('')
       document.body.appendChild(panel)
+
+      /* ---- 拖动 ◐ 换位置 + 面板贴着它弹出（默认在左侧栏，不挡右侧滚动条） ---- */
+      function clampKnob(x, y) {
+        var w = knob.offsetWidth || 34
+        var h = knob.offsetHeight || 34
+        return {
+          x: Math.max(4, Math.min(window.innerWidth - w - 4, x)),
+          y: Math.max(8, Math.min(window.innerHeight - h - 8, y)),
+        }
+      }
+      function applyKnobPos() {
+        var p = settings.pos
+        if (!p || typeof p.x !== 'number' || typeof p.y !== 'number') {
+          var def = { x: 10, y: Math.round(window.innerHeight * 0.44) }
+          knob.style.left = def.x + 'px'
+          knob.style.top = def.y + 'px'
+          return
+        }
+        var c = clampKnob(p.x, p.y)
+        knob.style.left = c.x + 'px'
+        knob.style.top = c.y + 'px'
+      }
+      function positionPanel() {
+        var kr = knob.getBoundingClientRect()
+        var pw = panel.offsetWidth || 250
+        var ph = panel.offsetHeight || 220
+        var left = kr.right + 6
+        if (left + pw > window.innerWidth - 6) left = Math.max(6, kr.left - pw - 6)
+        var top = Math.min(Math.max(8, kr.top - 12), window.innerHeight - ph - 8)
+        panel.style.left = Math.round(left) + 'px'
+        panel.style.top = Math.round(top) + 'px'
+      }
+      function refreshPanelPos() { applyKnobPos(); if (panel.classList.contains('open')) positionPanel() }
+
+      knob.addEventListener('pointerdown', function (event) {
+        if (event.button !== 0) return
+        var sx = event.clientX
+        var sy = event.clientY
+        var kr = knob.getBoundingClientRect()
+        var ox = sx - kr.left
+        var oy = sy - kr.top
+        var moved = false
+        knob.style.cursor = 'grabbing'
+        try { knob.setPointerCapture(event.pointerId) } catch (error) { /* ignore */ }
+        function onMove(ev) {
+          if (Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) > 3) moved = true
+          var c = clampKnob(ev.clientX - ox, ev.clientY - oy)
+          knob.style.left = c.x + 'px'
+          knob.style.top = c.y + 'px'
+          if (panel.classList.contains('open')) positionPanel()
+        }
+        function onUp() {
+          knob.style.cursor = ''
+          knob.removeEventListener('pointermove', onMove)
+          knob.removeEventListener('pointerup', onUp)
+          if (moved) {
+            settings.pos = { x: parseInt(knob.style.left, 10) || 10, y: parseInt(knob.style.top, 10) || 10 }
+            saveSettings()
+            justDragged = true
+          }
+        }
+        knob.addEventListener('pointermove', onMove)
+        knob.addEventListener('pointerup', onUp)
+      })
+      var justDragged = false
+      knob.addEventListener('click', function () {
+        if (justDragged) { justDragged = false; return }
+        var panelEl = document.getElementById(PANEL_ID)
+        if (!panelEl) return
+        var willOpen = !panelEl.classList.contains('open')
+        panelEl.classList.toggle('open', willOpen)
+        if (willOpen) positionPanel()
+      })
+      onResizePanel = refreshPanelPos
+      window.addEventListener('resize', onResizePanel)
+      applyKnobPos()
 
       var alphaInput = panel.querySelector('[data-role="alpha"]')
       var blurInput = panel.querySelector('[data-role="blur"]')
@@ -657,7 +728,7 @@ window.__ModuleLoader__.load({
         applySettings(); saveSettings(); refreshUi()
       })
       panel.querySelector('[data-role="reset"]').addEventListener('click', function () {
-        settings = { alpha: null, blur: null, guard: true }
+        settings = { alpha: null, blur: null, guard: true, pos: settings.pos }
         applySettings(); saveSettings(); refreshUi()
       })
       panel.querySelector('[data-role="close"]').addEventListener('click', function () {
@@ -668,10 +739,12 @@ window.__ModuleLoader__.load({
     }
 
     function removePanel() {
+      if (onResizePanel) { window.removeEventListener('resize', onResizePanel); onResizePanel = null }
       var knob = document.getElementById(KNOB_ID)
       if (knob) knob.remove()
       var panel = document.getElementById(PANEL_ID)
       if (panel) panel.remove()
+      refreshPanelUi = null
     }
 
     function onWindowBlur() {
@@ -760,3 +833,7 @@ window.__ModuleLoader__.load({
     }
   },
 })
+
+
+
+
